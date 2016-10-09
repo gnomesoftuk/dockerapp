@@ -1,0 +1,22 @@
+docker-machine create --driver digitalocean --digitalocean-image ubuntu-16-04-x64 --digitalocean-access-token f6eafea2650373d36b45a51ded82e631ebb87e0bff650a298903c2169b1cf20c docker-app-machine
+
+
+export DIGITALOCEAN_ACCESS_TOKEN=f6eafea2650373d36b45a51ded82e631ebb87e0bff650a298903c2169b1cf20c \
+export DIGITALOCEAN_PRIVATE_NETWORKING=true \
+export DIGITALOCEAN_IMAGE=debian-8-x64
+
+
+docker-machine create -d digitalocean --swarm \
+  --swarm-master \
+  --swarm-discovery="consul://${KV_IP}:8500" \
+  --engine-opt="cluster-store=consul://${KV_IP}:8500" \
+  --engine-opt="cluster-advertise=eth1:2376" \
+  master
+
+docker-machine create \
+  -d digitalocean \
+  --swarm \
+  --swarm-discovery="consul://${KV_IP}:8500" \
+  --engine-opt="cluster-store=consul://${KV_IP}:8500" \
+  --engine-opt="cluster-advertise=eth1:2376" \
+  slave
